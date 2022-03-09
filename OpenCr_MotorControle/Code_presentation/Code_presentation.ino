@@ -41,12 +41,14 @@ void setup()
   const char *log;
   bool result = false;
   bool result2 = false;
+  bool result3 = false;
 
 
   uint16_t model_number = 0;
 
   result = dxl_wb.init(DEVICE_NAME, BAUDRATE, &log);
   result2 = dxl_wb.init(DEVICE_NAME, BAUDRATE, &log);
+  result3 = dxl_wb.init(DEVICE_NAME, BAUDRATE, &log);
   if (result == false)
   {
     Serial.println(log);
@@ -63,6 +65,7 @@ void setup()
    
   result= dxl_wb.ping(BOX_ID, &model_number, &log);
   result2= dxl_wb.ping(WRIST_ID, &model_number, &log);
+  
   
   if (result == false)
   {
