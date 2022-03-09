@@ -41,11 +41,13 @@ void loop()
 {
   int test =0; 
 StaticJsonDocument<MaxJsonSize>  msg;
+StaticJsonDocument<MaxJsonSize> msg_retour; 
  if(!SC.isMessageAvailable()){
  Serial.print("waiting for a message \n");  
  }
  else{
  msg = SC.ReadJSon();
+ msg_retour = 10; 
 int payload =0;
  payload = msg.as<int>();
  if(payload != 0){ 
@@ -71,5 +73,6 @@ int payload =0;
   }
   
   }
- }  
+  //SC.sendJSon(msg_retour);
+ }   
 }
