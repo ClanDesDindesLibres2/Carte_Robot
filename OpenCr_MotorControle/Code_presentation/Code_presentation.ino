@@ -25,15 +25,15 @@
 #endif   
 
 #define BAUDRATE  57600
-#define BOX_ID    19
+#define BOX_ID    8
 #define SHOULDER_ID   4
-#define ELBOW_ID    21  
-#define WRIST_ID    18
+#define ELBOW_ID    3  
+#define WRIST_ID    19
 
 const uint8_t dxl_id = WRIST_ID;
 DynamixelWorkbench dxl_wb;
 
-void setup() 
+void setup()  
 {
   Serial.begin(57600);
   // while(!Serial); // Wait for Opening Serial Monitor
@@ -41,15 +41,17 @@ void setup()
   const char *log;
   bool result = false;
   bool result2 = false;
-  bool result3 = false;
+  //bool result3 = false;
 
 
   uint16_t model_number = 0;
+  uint16_t model_number2 = 0;
+  uint16_t model_number3 = 0;
 
   result = dxl_wb.init(DEVICE_NAME, BAUDRATE, &log);
   result2 = dxl_wb.init(DEVICE_NAME, BAUDRATE, &log);
-  result3 = dxl_wb.init(DEVICE_NAME, BAUDRATE, &log);
-  if (result == false)
+  //result3 = dxl_wb.init(DEVICE_NAME, BAUDRATE, &log);
+  if (result == false || result2 == false)
   {
     Serial.println(log);
     Serial.println("Failed to init");
@@ -64,10 +66,10 @@ void setup()
 
    
   result= dxl_wb.ping(BOX_ID, &model_number, &log);
-  result2= dxl_wb.ping(WRIST_ID, &model_number, &log);
+  result2= dxl_wb.ping(WRIST_ID, &model_number2, &log);
+ // result3 = dxl_wb.ping(SHOULDER_ID, &model_number3, &log);
   
-  
-  if (result == false)
+  if (result == false || result2 == false)
   {
     Serial.println(log);
     Serial.println("Failed to ping");
@@ -84,18 +86,29 @@ void setup()
     Serial.print("id : ");
     Serial.print(WRIST_ID);
     Serial.print(" model_number : ");
-    Serial.println(model_number);
+    Serial.println(model_number2);
+
+/*
+    Serial.println("Succeeded to ping");
+    Serial.print("id : ");
+    Serial.print(SHOULDER_ID);
+    Serial.print(" model_number : ");
+    Serial.println(model_number3);
+    */
     
   }
 
-  
+  result = dxl_wb.torqueOff(BOX_ID, &log);
   result = dxl_wb.jointMode(BOX_ID, 100, 1000, &log);
-  //result = dxl_wb.torqueOff(BOX_ID, &log);
+  dxl_wb.torqueOn(BOX_ID, &log);
+  result2 = dxl_wb.torqueOff(WRIST_ID, &log);
   result2 = dxl_wb.jointMode(WRIST_ID, 100, 1000, &log);
+  dxl_wb.torqueOn(WRIST_ID, &log);
+   //result3 = dxl_wb.jointMode(SHOULDER_ID, 100, 1000, &log);
   //result2 = dxl_wb.torqueOff(WRIST_ID, &log);
 
   
-  if (result == false)
+  if (result == false || result2 == false)
   {
     Serial.println(log);
     Serial.println("Failed to change joint mode");
@@ -107,10 +120,13 @@ void setup()
     while(true){
     dxl_wb.goalPosition(BOX_ID, (int32_t)1500);
     dxl_wb.goalPosition(WRIST_ID, (int32_t)3500);
+    //dxl_wb.goalPosition(SHOULDER_ID, (int32_t)3500);
     delay(1500);
 
     dxl_wb.goalPosition(BOX_ID, (int32_t)2500);
     dxl_wb.goalPosition(WRIST_ID, (int32_t)1900);
+    //dxl_wb.goalPosition(SHOULDER_ID, (int32_t)1900);
+    
     delay(1500);
     }
   }
