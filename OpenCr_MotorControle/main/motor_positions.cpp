@@ -359,6 +359,40 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
   data_shoulder = -1;
   data_box = -1;
   data_elbow = -1;
+
+
+//RETREAT
+  while(!shoulder_goal || !box_goal || !elbow_goal){
+    dxl_wb.itemRead(18, "Present_Position", &data_shoulder, &log);
+    dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
+    dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
+    
+    dxl_wb.goalPosition(8, (int32_t)square[0]);
+    dxl_wb.goalPosition(18, (int32_t)square[1]);
+    dxl_wb.goalPosition(21, (int32_t)square[2]);
+    
+    if(data_shoulder <=( square[1]+20) && data_shoulder >=( square[1]-20)){
+      shoulder_goal = true;
+      }
+    if(data_box <=( square[0]+10) && data_box >=( square[0]-10))
+    {
+      box_goal = true;
+    }
+    if(data_elbow <=( square[2]+10) && data_elbow >=( square[2]-10))
+    {
+      elbow_goal = true;
+    }
+    }
+   
+//RESET
+  shoulder_goal = false;
+  box_goal = false; 
+  elbow_goal = false;   
+  data_shoulder = -1;
+  data_box = -1;
+  data_elbow = -1;
+
+  
   //MOVE HOME
   while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(18, "Present_Position", &data_shoulder, &log);
@@ -484,6 +518,43 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
     }
       
   }
+
+  //RESET
+  shoulder_goal = false;
+  box_goal = false; 
+  elbow_goal = false;   
+  data_shoulder = -1;
+  data_box = -1;
+  data_elbow = -1;
+
+  //RETREAT
+  while(!shoulder_goal || !box_goal || !elbow_goal){
+    dxl_wb.itemRead(18, "Present_Position", &data_shoulder, &log);
+    dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
+    dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
+    
+    dxl_wb.goalPosition(8, (int32_t)square[0]);
+    dxl_wb.goalPosition(18, (int32_t)square[1]);
+    dxl_wb.goalPosition(21, (int32_t)square[2]);
+    
+    if(data_shoulder <=( square[1]+20) && data_shoulder >=( square[1]-20)){
+      shoulder_goal = true;
+      }
+    if(data_box <=( square[0]+10) && data_box >=( square[0]-10))
+    {
+      box_goal = true;
+    }
+    if(data_elbow <=( square[2]+10) && data_elbow >=( square[2]-10))
+    {
+      elbow_goal = true;
+    }
+    }
+   
+
+
+
+
+  
   //RESET
   shoulder_goal = false;
   box_goal = false; 
