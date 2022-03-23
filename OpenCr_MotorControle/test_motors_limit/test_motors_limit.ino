@@ -38,8 +38,6 @@ void setup()
 
   const char *log;
   bool result0 = false;
-  bool result1 = false; 
-  bool result2 = false; 
 
   
   uint8_t dxl_cnt = 0;
@@ -50,8 +48,7 @@ void setup()
   uint8_t index = 0;
   uint8_t dxl_id = DXL_ID;
 
-  
-  
+    
     result0 = dxl_wb.init(DEVICE_NAME, baudrate, &log);
     if (result0 == false)
     {
@@ -102,8 +99,6 @@ void setup()
 void loop() 
 {
   bool result0 = true;
-  bool result1 = true;
-  bool result2 = true;
   const char *log;
   int32_t get_data0 = 0;
   for(int k = 0; k < 3; k++){
