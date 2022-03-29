@@ -101,8 +101,9 @@ void loop()
   bool result0 = true;
   const char *log;
   int32_t get_data0 = 0;
+  int scanned_2[3] = {8,18,21}; 
   for(int k = 0; k < 3; k++){
-    result0 = dxl_wb.itemRead(scanned_id[k], "Present_Position", &get_data0, &log);
+    result0 = dxl_wb.itemRead((uint8_t)scanned_2[k], "Present_Position", &get_data0, &log);
     if (result0 == false)
   {
     Serial.println(log);

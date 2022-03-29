@@ -1,12 +1,15 @@
 #include "motor_positions.h"
 
 
+
+int positionHome[6] = {0,1,2,3,4,5}; 
+int positionDead[6] = {100,200,300,400,500}; 
 int** board()
 {
 	int* game_board[100];
-  
-  int positionHome[6] = {0,1,2,3,4,5}; 
-  
+
+
+
   int position21[6] = {6,7,8,9,10,11};
   int position22[6] = {1,1,1,1,1,1};
   int position23[6]= {1,1,1,1,1,1};
@@ -167,12 +170,12 @@ int** board()
   game_board[96] = position96;
   game_board[97] = position97;
   game_board[98] = position98;
-  
+  game_board[99] = positionDead;   
   
   return game_board;
 };
 
-void reach_square(int* start,int* finish, int* home_spot,int kill){
+void chess_move(int* start,int* finish, int kill){
   //INITIAlISATION
 #if defined(__OPENCM904__)
 #define DEVICE_NAME "3" //Dynamixel on Serial3(USART3)  <-OpenCM 485EXP
@@ -244,15 +247,15 @@ DynamixelWorkbench dxl_wb;
     if(result0==false)Serial.println("error1"); 
     }
 if(kill == 1){
-  pick(finish,home_spot,dxl_wb);
-  //DROP DANS LA FAUSSE
+  pick(finish,dxl_wb);
+  drop(positionDead,dxl_wb); 
 }
-  pick(start,home_spot,dxl_wb); 
-  drop(finish,home_spot,dxl_wb);  
+  pick(start,dxl_wb); 
+  drop(finish,dxl_wb);  
 };
 
 
-void pick(int* square, int* home_spot, DynamixelWorkbench dxl_wb){
+void pick(int* square,DynamixelWorkbench dxl_wb){
   //INIT
   bool done = false; 
   const char *log;
@@ -268,18 +271,18 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
     dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
     
-    dxl_wb.goalPosition(8, (int32_t)home_spot[3]);
-    dxl_wb.goalPosition(18, (int32_t)home_spot[4]);
-    dxl_wb.goalPosition(21, (int32_t)home_spot[5]);
+    dxl_wb.goalPosition(8, (int32_t)positionHome[3]);
+    dxl_wb.goalPosition(18, (int32_t)positionHome[4]);
+    dxl_wb.goalPosition(21, (int32_t)positionHome[5]);
     
-    if(data_shoulder <=( home_spot[4]+20) && data_shoulder >=( home_spot[4]-20)){
+    if(data_shoulder <=( positionHome[4]+20) && data_shoulder >=( positionHome[4]-20)){
       shoulder_goal = true;
       }
-    if(data_box <=( home_spot[3]+10) && data_box >=( home_spot[3]-10))
+    if(data_box <=( positionHome[3]+10) && data_box >=( positionHome[3]-10))
     {
       box_goal = true;
     }
-    if(data_elbow <=( home_spot[5]+10) && data_elbow >=( home_spot[5]-10))
+    if(data_elbow <=( positionHome[5]+10) && data_elbow >=( positionHome[5]-10))
     {
       elbow_goal = true;
     }
@@ -328,6 +331,8 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
   data_elbow=-1;
   delay(100);
 
+GripperOpen(); 
+
   //PICK
   while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(18, "Present_Position", &data_shoulder, &log);
@@ -360,6 +365,7 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
   data_box = -1;
   data_elbow = -1;
 
+GripperClose();
 
 //RETREAT
   while(!shoulder_goal || !box_goal || !elbow_goal){
@@ -399,18 +405,18 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
     dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
     
-    dxl_wb.goalPosition(8, (int32_t)home_spot[3]);
-    dxl_wb.goalPosition(18, (int32_t)home_spot[4]);
-    dxl_wb.goalPosition(21, (int32_t)home_spot[5]);
+    dxl_wb.goalPosition(8, (int32_t)positionHome[3]);
+    dxl_wb.goalPosition(18, (int32_t)positionHome[4]);
+    dxl_wb.goalPosition(21, (int32_t)positionHome[5]);
     
-    if(data_shoulder <=( home_spot[4]+20) && data_shoulder >=( home_spot[4]-20)){
+    if(data_shoulder <=( positionHome[4]+20) && data_shoulder >=( positionHome[4]-20)){
       shoulder_goal = true;
       }
-    if(data_box <=( home_spot[3]+10) && data_box >=( home_spot[3]-10))
+    if(data_box <=( positionHome[3]+10) && data_box >=( positionHome[3]-10))
     {
       box_goal = true;
     }
-    if(data_elbow <=( home_spot[5]+10) && data_elbow >=( home_spot[5]-10))
+    if(data_elbow <=( positionHome[5]+10) && data_elbow >=( positionHome[5]-10))
     {
       elbow_goal = true;
     }
@@ -418,7 +424,7 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
 
   };
 
-void drop(int* square, int* home_spot, DynamixelWorkbench dxl_wb){
+void drop(int* square, DynamixelWorkbench dxl_wb){
     //GRIPPER TO ADD
     //INIT
   const char *log;
@@ -434,18 +440,18 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
     dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
     
-    dxl_wb.goalPosition(8, (int32_t)home_spot[3]);
-    dxl_wb.goalPosition(18, (int32_t)home_spot[4]);
-    dxl_wb.goalPosition(21, (int32_t)home_spot[5]);
+    dxl_wb.goalPosition(8, (int32_t)positionHome[3]);
+    dxl_wb.goalPosition(18, (int32_t)positionHome[4]);
+    dxl_wb.goalPosition(21, (int32_t)positionHome[5]);
     
-    if(data_shoulder <=( home_spot[4]+20) && data_shoulder >=( home_spot[4]-20)){
+    if(data_shoulder <=( positionHome[4]+20) && data_shoulder >=( positionHome[4]-20)){
       shoulder_goal = true;
       }
-    if(data_box <=( home_spot[3]+10) && data_box >=( home_spot[3]-10))
+    if(data_box <=( positionHome[3]+10) && data_box >=( positionHome[3]-10))
     {
       box_goal = true;
     }
-    if(data_elbow <=( home_spot[5]+10) && data_elbow >=( home_spot[5]-10))
+    if(data_elbow <=( positionHome[5]+10) && data_elbow >=( positionHome[5]-10))
     {
       elbow_goal = true;
     }
@@ -494,7 +500,7 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
   data_elbow=-1;
   delay(100);
 
-  //PICK
+  //DROP
   while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(18, "Present_Position", &data_shoulder, &log);
     dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
@@ -518,6 +524,8 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
     }
       
   }
+
+GripperOpen(); 
 
   //RESET
   shoulder_goal = false;
@@ -568,20 +576,36 @@ while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
     dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
     
-    dxl_wb.goalPosition(8, (int32_t)home_spot[3]);
-    dxl_wb.goalPosition(18, (int32_t)home_spot[4]);
-    dxl_wb.goalPosition(21, (int32_t)home_spot[5]);
+    dxl_wb.goalPosition(8, (int32_t)positionHome[3]);
+    dxl_wb.goalPosition(18, (int32_t)positionHome[4]);
+    dxl_wb.goalPosition(21, (int32_t)positionHome[5]);
     
-    if(data_shoulder <=( home_spot[4]+20) && data_shoulder >=( home_spot[4]-20)){
+    if(data_shoulder <=( positionHome[4]+20) && data_shoulder >=( positionHome[4]-20)){
       shoulder_goal = true;
       }
-    if(data_box <=( home_spot[3]+10) && data_box >=( home_spot[3]-10))
+    if(data_box <=( positionHome[3]+10) && data_box >=( positionHome[3]-10))
     {
       box_goal = true;
     }
-    if(data_elbow <=( home_spot[5]+10) && data_elbow >=( home_spot[5]-10))
+    if(data_elbow <=( positionHome[5]+10) && data_elbow >=( positionHome[5]-10))
     {
       elbow_goal = true;
     }
 }
+
+GripperClose();
   };
+
+void GripperClose(){
+  Servo myservo;
+  myservo.attach(9);
+    myservo.write(135);
+    delay(1000);
+    };
+
+void GripperOpen(){
+  Servo myservo;
+  myservo.attach(9);
+      myservo.write(120);
+      delay(1000);
+      };

@@ -3,9 +3,13 @@
 
 #include <Arduino.h>
 #include <DynamixelWorkbench.h>
+#include <Servo.h>
 
 int** board(); 
-void reach_square(int* start,int* finish,int *home_spot, int kill); 
-void pick(int* square, int* home_spot, DynamixelWorkbench dxl_wb);
-void drop(int* square, int* home_spot, DynamixelWorkbench dxl_wb);
+void chess_move(int* start,int* finish, int kill); 
+void pick(int* square, DynamixelWorkbench dxl_wb);
+void drop(int* square, DynamixelWorkbench dxl_wb);
+void GripperClose();
+void GripperOpen();
+
 #endif
