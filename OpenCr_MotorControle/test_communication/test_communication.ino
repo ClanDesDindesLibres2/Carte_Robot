@@ -9,6 +9,7 @@ void setup() {
 
 void loop() {
  if ((msg = readSerialPort(value))!= "") {
+  delay(10000); 
    sendData(msg);
  }
   delay(500);

@@ -89,10 +89,10 @@ void setup()
     }  
     for(int i=0;i<3;i++){
     if(scanned_id[i] == 8){
-      result0 = dxl_wb.jointMode(scanned_id[i], 175, 175, &log);
+      result0 = dxl_wb.jointMode(scanned_id[i], 50, 50, &log);
     }
     else{
-       result0 = dxl_wb.jointMode(scanned_id[i], 80, 80, &log);
+       result0 = dxl_wb.jointMode(scanned_id[i], 20, 20, &log);
     }
    
     
@@ -116,34 +116,44 @@ void loop()
   int32_t data_shoulder = -1;
   int32_t data_box = -1;
    int32_t data_elbow = -1;
-  int32_t SHOULDER_MIN = 950;
-  int32_t SHOULDER_MAX = 2530;
-  int32_t BOX_LEFT = 3500;
+  int32_t SHOULDER_MIN = 1000;
+  int32_t SHOULDER_MAX = 2000;
+  int32_t BOX_LEFT = 2409;
   int32_t BOX_RIGHT = 2700;
-  int32_t ELBOW_MIN = 995;
-  int32_t ELBOW_MAX = 2400;
+  int32_t ELBOW_MIN = 2000;
+  int32_t ELBOW_MAX = 2500;
    
   while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(18, "Present_Position", &data_shoulder, &log);
+ 
     dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
+  
     dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
+ 
     
     dxl_wb.goalPosition(18, (int32_t)SHOULDER_MIN);
+ 
     dxl_wb.goalPosition(8, (int32_t)BOX_LEFT);
+     
     dxl_wb.goalPosition(21, (int32_t)ELBOW_MAX);
+   
     
-    if(data_shoulder <=( SHOULDER_MIN+20) && data_shoulder >=( SHOULDER_MIN-20)){
+    
+    if(data_shoulder <=( SHOULDER_MIN+40) && data_shoulder >=( SHOULDER_MIN-40)){
       shoulder_goal = true;
+      Serial.println("shoulder done");
       }
     if(data_box <=( BOX_LEFT+10) && data_box >=( BOX_LEFT-10))
     {
       box_goal = true;
+      Serial.println("box done");
     }
-    if(data_elbow <=( ELBOW_MAX+10) && data_elbow >=( ELBOW_MAX-10))
+    if(data_elbow <=( ELBOW_MAX+40) && data_elbow >=( ELBOW_MAX-40))
     {
       elbow_goal = true;
+      Serial.println("elbow done");
     }
-    Serial.println(data_box);
+
     }
    
   //dxl_wb.torqueOff(18);
@@ -155,6 +165,7 @@ void loop()
   Serial.println(data_box);
   Serial.println(data_elbow);
   Serial.println("=========================");
+  delay(5000);
   box_goal = false;
   shoulder_goal = false;
   elbow_goal=false;
@@ -164,31 +175,40 @@ void loop()
   delay(100);
   while(!shoulder_goal || !box_goal || !elbow_goal){
     dxl_wb.itemRead(18, "Present_Position", &data_shoulder, &log);
+ 
     dxl_wb.itemRead(8, "Present_Position", &data_box, &log);
+
     dxl_wb.itemRead(21, "Present_Position", &data_elbow, &log);
+
     
     dxl_wb.goalPosition(18, (int32_t)SHOULDER_MAX);
+ 
     dxl_wb.goalPosition(8, (int32_t)BOX_RIGHT);
+ 
     dxl_wb.goalPosition(21, (int32_t)ELBOW_MIN);
+ 
     
-    if(data_shoulder <=( SHOULDER_MAX+20) && data_shoulder >=( SHOULDER_MAX-20)){
+    if(data_shoulder <=( SHOULDER_MAX+40) && data_shoulder >=( SHOULDER_MAX-40)){
       shoulder_goal = true;
+      Serial.println("shoulder done");
       }
     if(data_box <=( BOX_RIGHT+10) && data_box >=( BOX_RIGHT-10)){
       box_goal = true;
+      Serial.println("box done");
       }
-    if(data_elbow <=( ELBOW_MIN+10) && data_elbow >=( ELBOW_MIN-10))
+    if(data_elbow <=( ELBOW_MIN+40) && data_elbow >=( ELBOW_MIN-40))
     {
       elbow_goal = true;
+      Serial.println("elbow done");
     }      
       
   }
   Serial.println("fin boucle 2"); 
   Serial.println("le data qui arrête est :"); 
-  Serial.println("=========================");
+  Serial.println("=============== ==========");
   Serial.println(data_shoulder); 
   Serial.println(data_box);
   Serial.println(data_elbow);
   Serial.println("=========================");
-  delay(100); 
+  delay(3000); 
 }

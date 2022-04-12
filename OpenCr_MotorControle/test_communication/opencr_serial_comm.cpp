@@ -19,6 +19,5 @@ String readSerialPort(int values[3])
 
 void sendData(String msg) 
 {
- Serial.print("OpenCR received");
- Serial.print(msg);
+ Serial.print(1);
 };
